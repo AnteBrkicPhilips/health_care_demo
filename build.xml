@@ -4,6 +4,9 @@
     <property name="src.dir"     value="src/main/java"/>
     <property name="build.dir"   value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="lib.dir"     value="lib"/>
+    <!-- Add a property for the OpenTelemetry Java agent JAR file -->
+    <property name="agent.jar"   value="${lib.dir}/opentelemetry-javaagent.jar"/>
     <property name="main-class"  value="com.example.healthcare.HealthcareSystem"/>
     
     <!-- Create the build directory structure -->
@@ -14,15 +17,33 @@
     
     <!-- Compile the source code into classes -->
     <target name="compile" depends="init">
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false">
+            <classpath>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <compilerarg line="--add-modules java.sql"/>
+        </javac>
     </target>
     
     <!-- Run the main class -->
     <target name="run" depends="compile">
         <java classname="${main-class}" fork="true">
+            <!-- Add the -javaagent argument to include the OpenTelemetry Java agent -->
+            <jvmarg value="-javaagent:${agent.jar}"/>
+            <!-- Add the -Dotel.service.name argument to specify the OpenTelemetry service name -->
+            <jvmarg value="-Dotel.service.name=your-service-name"/>
+            <!-- Disable the OpenTelemetry traces and metrics exporters -->
+            <jvmarg value="-Dotel.traces.exporter=logging"/>
+            <jvmarg value="-Dotel.metrics.exporter=logging"/>
             <classpath>
                 <path location="${classes.dir}"/>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
             </classpath>
+            <jvmarg value="--add-modules=java.sql"/>
         </java>
     </target>
 </project>
