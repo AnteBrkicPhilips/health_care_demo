@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="healthcare" default="run" basedir=".">
+    <!-- Set global properties for this build -->
+    <property name="src.dir"     value="src/main/java"/>
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="main-class"  value="com.example.healthcare.HealthcareSystem"/>
+    
+    <!-- Create the build directory structure -->
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+    </target>
+    
+    <!-- Compile the source code into classes -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false"/>
+    </target>
+    
+    <!-- Run the main class -->
+    <target name="run" depends="compile">
+        <java classname="${main-class}" fork="true">
+            <classpath>
+                <path location="${classes.dir}"/>
+            </classpath>
+        </java>
+    </target>
+</project>
