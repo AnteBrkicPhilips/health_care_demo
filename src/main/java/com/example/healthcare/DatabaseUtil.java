@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class DatabaseUtil {
 
-    private static final String JDBC_URL = "jdbc:h2:~/testdb";
+    private static final String JDBC_URL = "jdbc:p6spy:h2:~/testdb";
     private static final String JDBC_USER = "sa";
     private static final String JDBC_PASSWORD = "";
 
