@@ -16,9 +16,6 @@ public class HealthcareSystem {
     }
 
     public void run() {
-        DatabaseUtil.clearDatabase();  // Clear the database at the start
-        DatabaseUtil.createTable();
-
         insertPatient(new Patient("John Doe", 30, "Flu"));
         insertPatient(new Patient("Jane Smith", 25, "Cold"));
         insertPatient(new Patient("Emily Johnson", 40, "Diabetes"));
@@ -35,7 +32,7 @@ public class HealthcareSystem {
     }
 
     public void insertPatient(Patient patient) {
-        String insertSQL = "INSERT INTO patients (name, age, diagnosis) VALUES (?, ?, ?)";
+        String insertSQL = "INSERT INTO dem1.patients (name, age, diagnosis) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
             pstmt.setString(1, patient.getName());
@@ -49,7 +46,7 @@ public class HealthcareSystem {
 
     public List<Patient> getAllPatients() {
         List<Patient> patients = new ArrayList<>();
-        String selectSQL = "SELECT * FROM patients";
+        String selectSQL = "SELECT * FROM dem1.patients";
 
         try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(selectSQL); ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
