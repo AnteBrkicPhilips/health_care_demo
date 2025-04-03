@@ -1,0 +1,1 @@
+Copy sql file to docker /sql folder in order for docker to initialize database

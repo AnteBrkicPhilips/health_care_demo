@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="healthcare" default="run" basedir=".">
+    <!-- Set global properties for this build -->
+    <property name="src.dir" value="src/main/java"/>
+    <property name="resources.dir" value="src/main/resources"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent.jar"/>
+    <property name="main-class" value="com.example.healthcare.HealthcareSystem"/>
+
+    <!-- Create the build directory structure -->
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+    </target>
+
+    <!-- Copy resources to the build directory -->
+    <target name="copy-resources" depends="init">
+        <copy todir="${classes.dir}">
+            <fileset dir="${resources.dir}" includes="**/*"/>
+        </copy>
+    </target>
+
+    <!-- Compile the source code into classes -->
+    <target name="compile" depends="copy-resources">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false">
+            <classpath>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <compilerarg line="--add-modules java.sql"/>
+        </javac>
+    </target>
+
+    <!-- Run the main class -->
+    <target name="run" depends="compile">
+        <java classname="${main-class}" fork="true">
+            <jvmarg value="-javaagent:${agent.jar}"/>
+            <jvmarg value="-Dotel.service.name=your-service-name"/>
+            <jvmarg value="-Dotel.traces.exporter=logging"/>
+            <jvmarg value="-Dotel.metrics.exporter=logging"/>
+            <classpath>
+                <path location="${classes.dir}"/>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <sysproperty key="spy.properties" value="src/main/resources/spy.properties"/>
+            <jvmarg value="--add-modules=java.sql"/>
+        </java>
+    </target>
+</project>
