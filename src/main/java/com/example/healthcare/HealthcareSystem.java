@@ -16,6 +16,8 @@ public class HealthcareSystem {
     }
 
     public void run() {
+    	DatabaseUtil.truncateTable();
+    	
         insertPatient(new Patient("John Doe", 30, "Flu"));
         insertPatient(new Patient("Jane Smith", 25, "Cold"));
         insertPatient(new Patient("Emily Johnson", 40, "Diabetes"));
@@ -63,7 +65,7 @@ public class HealthcareSystem {
     }
 
     public void displayAllPatients(List<Patient> patients) {
-        System.out.println("All patients:");
+        System.out.println("All patients:\n");
         patients.forEach(System.out::println);
     }
 
@@ -74,7 +76,9 @@ public class HealthcareSystem {
     }
 
     public void displayFilteredPatients(List<Patient> patients) {
-        System.out.println("\nPatients with " + (patients.isEmpty() ? "no diagnosis" : patients.get(0).getDiagnosis()) + ":");
+        System.out.println("\nPatients with " + (patients.isEmpty() ? "no diagnosis" : patients.get(0).getDiagnosis()) + ":\n");
         patients.forEach(System.out::println);
     }
+    
+
 }
