@@ -3,16 +3,21 @@
     <!-- Set global properties for this build -->
     <property name="src.dir" value="src/main/java"/>
     <property name="resources.dir" value="src/main/resources"/>
+    <property name="test.src.dir" value="test/main/java"/>
     <property name="build.dir" value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="test.classes.dir" value="${build.dir}/test-classes"/>
     <property name="lib.dir" value="lib"/>
     <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent.jar"/>
     <property name="main-class" value="com.example.healthcare.HealthcareSystem"/>
+    <property name="test.reports.dir" value="${build.dir}/test-reports"/>
 
     <!-- Create the build directory structure -->
     <target name="init">
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${test.classes.dir}"/>
+        <mkdir dir="${test.reports.dir}"/>
     </target>
 
     <!-- Copy resources to the build directory -->
@@ -32,6 +37,38 @@
             </classpath>
             <compilerarg line="--add-modules java.sql"/>
         </javac>
+    </target>
+
+    <!-- Compile the test source code into test-classes -->
+    <target name="compile-tests" depends="compile">
+        <javac srcdir="${test.src.dir}" destdir="${test.classes.dir}" includeantruntime="false">
+            <classpath>
+                <path location="${classes.dir}"/>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <compilerarg line="--add-modules java.sql"/>
+        </javac>
+    </target>
+
+    <!-- Run the JUnit tests -->
+    <target name="test" depends="compile-tests">
+        <junit printsummary="yes">
+            <classpath>
+                <path location="${test.classes.dir}"/>
+                <path location="${classes.dir}"/>
+                <fileset dir="${lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <formatter type="xml"/>
+            <batchtest fork="true" todir="${test.reports.dir}">
+                <fileset dir="${test.src.dir}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
     </target>
 
     <!-- Run the main class -->
