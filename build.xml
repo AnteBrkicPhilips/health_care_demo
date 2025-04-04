@@ -35,7 +35,6 @@
                     <include name="**/*.jar"/>
                 </fileset>
             </classpath>
-            <compilerarg line="--add-modules java.sql"/>
         </javac>
     </target>
 
@@ -48,7 +47,6 @@
                     <include name="**/*.jar"/>
                 </fileset>
             </classpath>
-            <compilerarg line="--add-modules java.sql"/>
         </javac>
     </target>
 
@@ -85,7 +83,6 @@
                 </fileset>
             </classpath>
             <sysproperty key="spy.properties" value="src/main/resources/spy.properties"/>
-            <jvmarg value="--add-modules=java.sql"/>
         </java>
     </target>
 </project>
