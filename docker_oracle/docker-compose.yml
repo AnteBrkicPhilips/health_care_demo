@@ -1,0 +1,14 @@
+services:
+  oracle11:
+    image: oracleinanutshell/oracle-xe-11g:latest
+    container_name: oracle11
+    tty: true
+    restart: always
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+    ports:
+      - "49160:22"
+      - "1521:1521"
+      - 5500:5500
