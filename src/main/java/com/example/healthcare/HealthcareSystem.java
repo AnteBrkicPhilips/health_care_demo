@@ -1,5 +1,7 @@
 package com.example.healthcare;
 
+import com.example.healthcare.metrics.CustomMetrics;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +15,10 @@ public class HealthcareSystem {
 
     public static void main(String[] args) {
         HealthcareSystem healthcareSystem = new HealthcareSystem();
+        CustomMetrics metricPrototype = new CustomMetrics();
         while (true){
             healthcareSystem.run();
+            metricPrototype.getRequestCounter().add(1);
             try {
                 TimeUnit.SECONDS.sleep(3);
             } catch (InterruptedException e) {

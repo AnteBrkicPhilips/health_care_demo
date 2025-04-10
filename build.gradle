@@ -21,6 +21,8 @@ dependencies {
     implementation 'p6spy:p6spy:3.9.1'
     implementation 'io.opentelemetry:opentelemetry-api:1.32.0'
     implementation 'io.opentelemetry:opentelemetry-sdk:1.32.0'
+    runtimeOnly    'io.opentelemetry.javaagent:opentelemetry-javaagent:1.32.0'
+//    implementation 'com.github.oshi:oshi-core:6.4.5'
     testImplementation 'com.h2database:h2:2.3.232'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.hamcrest:hamcrest-core:1.3'
