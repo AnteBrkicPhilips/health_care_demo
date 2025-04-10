@@ -6,13 +6,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class HealthcareSystem {
 
     public static void main(String[] args) {
         HealthcareSystem healthcareSystem = new HealthcareSystem();
-        healthcareSystem.run();
+        while (true){
+            healthcareSystem.run();
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void run() {
