@@ -18,7 +18,7 @@ public class HealthcareSystem {
         CustomMetrics metricPrototype = new CustomMetrics();
         while (true){
             healthcareSystem.run();
-            metricPrototype.getRequestCounter().add(1);
+            healthcareSystem.emulateError();
             try {
                 TimeUnit.SECONDS.sleep(3);
             } catch (InterruptedException e) {
@@ -43,6 +43,16 @@ public class HealthcareSystem {
         // Filter and display patients with the diagnosis "Flu"
         List<Patient> fluPatients = filterPatientsByDiagnosis(patients, "Flu");
         displayFilteredPatients(fluPatients);
+    }
+
+    public void emulateError() {
+        String insertSQL = "INSERT INTO dem2.patients2 (name, age, diagnosis) VALUES (1, 2, 3)";
+
+        try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void insertPatient(Patient patient) {

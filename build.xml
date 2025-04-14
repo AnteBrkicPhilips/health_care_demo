@@ -11,8 +11,8 @@
     <property name="classes.dir" value="${build.dir}/classes"/>
 <!--    <property name="test.classes.dir" value="${build.dir}/test-classes"/>-->
     <property name="lib.dir" value="lib"/>
-<!--    <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent.jar"/>-->
-    <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent-1.32.0.jar"/>
+    <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent.jar"/>
+<!--    <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent-1.32.0.jar"/>-->
     <property name="otlp.extension" value="${lib.dir}/otlp-extension.jar"/>
     <property name="main-class" value="com.example.healthcare.HealthcareSystem"/>
 <!--    <property name="test.reports.dir" value="${build.dir}/test-reports"/>-->
@@ -82,16 +82,20 @@
             <jvmarg value="-javaagent:${agent.jar}"/>
             <jvmarg value="-Dotel.javaagent.extensions=${otlp.extension}"/>
             <jvmarg value="-Dotel.service.name=your-service-name"/>
-<!--            <jvmarg value="-Dotel.traces.exporter=logging"/>-->
-<!--            <jvmarg value="-Dotel.metrics.exporter=logging"/>-->
-<!--            <jvmarg value="-Dotel.logs.exporter=logging"/>-->
-<!--                        <jvmarg value="-Dotel.traces.exporter=otlp"/>-->
-<!--                        <jvmarg value="-Dotel.logs.exporter=otlp"/>-->
-<!--            <jvmarg value="-Dotel.metrics.exporter=otlp"/>-->
+            <jvmarg value="-Dotel.traces.exporter=logging"/>
 
+<!--            <jvmarg value="-Dotel.metrics.exporter=otlp"/>-->
             <jvmarg value="-Dotel.metrics.exporter=prometheus"/>
+            <!--            <jvmarg value="-Dotel.metrics.exporter=logging"/>-->
+
+<!--            <jvmarg value="-Dotel.logs.exporter=logging"/>-->
+                        <jvmarg value="-Dotel.traces.exporter=otlp"/>
+<!--                        <jvmarg value="-Dotel.logs.exporter=otlp"/>-->
+
             <jvmarg value="-Dotel.exporter.prometheus.host=0.0.0.0"/>
             <jvmarg value="-Dotel.exporter.prometheus.port=9464"/>
+            <jvmarg value="-Dotel.instrumentation.micrometer.enabled=true"/>
+<!--            <jvmarg value="-Dotel.metrics.exporter=console"/>-->
 
 
             <jvmarg value="-Dotel.instrumentation.jdbc.capture-parameters=true"/>

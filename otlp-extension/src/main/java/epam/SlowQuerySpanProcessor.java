@@ -1,25 +1,57 @@
 package epam;
 
+import epam.metrics.CustomMetrics;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.context.Context;
+import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.ReadWriteSpan;
 import io.opentelemetry.sdk.trace.ReadableSpan;
 import io.opentelemetry.sdk.trace.SpanProcessor;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+import io.opentelemetry.sdk.trace.export.SpanExporter;
 
 public class SlowQuerySpanProcessor implements SpanProcessor {
-//    private static final Logger logger = LoggerFactory.getLogger(epam.SlowQuerySpanProcessor.class);
-    private static final long SLOW_QUERY_THRESHOLD_MS = 500; // Define threshold in milliseconds
+    private static final long SLOW_QUERY_THRESHOLD_MS = 7 * 1000_000 ; // Define threshold in milliseconds
+
+    private final SpanExporter wrappedExporter;
+
+
+    private CustomMetrics customMetrics ;
+
+    public SlowQuerySpanProcessor(SpanExporter wrappedExporter) {
+        this.wrappedExporter = wrappedExporter;
+
+    }
+
+    private CustomMetrics getCustomMetrics() {
+        if (this.customMetrics==null){
+            this.customMetrics = new CustomMetrics();
+        }
+        return customMetrics;
+    }
+
+    @Override
+    public CompletableResultCode shutdown() {
+        System.out.println("!!!!!!!!!!!!!");
+        return wrappedExporter.shutdown();
+    }
+
+    @Override
+    public CompletableResultCode forceFlush() {
+        System.out.println("!!!!!!!!!!!!! flush");
+        return wrappedExporter.flush();
+    }
 
     @Override
     public void onEnd(ReadableSpan span) {
-        if ("db.query".equals(span.getName()) && span.getLatencyNanos() > SLOW_QUERY_THRESHOLD_MS) {
-            String dbStatement = span.getAttribute(AttributeKey.stringKey("db.statement"));
-            System.out.println("!!!!");
-//            logger.warn("Slow query detected: {}", dbStatement);
-        }else {
-            System.out.println("!!!! working");
+        String dbStatement = span.getAttribute(AttributeKey.stringKey("db.statement"));
+        if(dbStatement != null && !dbStatement.isEmpty() ){
+            if ( span.getLatencyNanos() > SLOW_QUERY_THRESHOLD_MS) {
+                System.out.println("!!!! slow query " +dbStatement +span.getLatencyNanos());
+
+                getCustomMetrics().getRequestCounter().add(1);
+            }else {
+                System.out.println("!!!! Filter span "+span.getSpanContext()+span.getLatencyNanos());
+            }
         }
     }
 

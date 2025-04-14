@@ -27,3 +27,6 @@ export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf \
 export OTEL_LOGS_EXPORTER=otlp \
 export OTEL_SERVICE_NAME='java-prototype'
 ```
+
+http://localhost:8080/
+http://localhost:9464/metrics

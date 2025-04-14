@@ -11,6 +11,8 @@ dependencies {
     implementation 'io.opentelemetry:opentelemetry-sdk:1.32.0'
 //    implementation 'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.32.0'
     implementation("io.opentelemetry.javaagent:opentelemetry-javaagent-extension-api:1.32.1-alpha")
+
+    compileOnly("io.opentelemetry:opentelemetry-exporter-otlp:1.32.0")
 //    implementation 'io.opentelemetry.javaagent:opentelemetry-javaagent-extension-api:1.49.0'
 
 }

@@ -1,31 +1,27 @@
 package epam;
 
-//import io.opentelemetry.javaagent.extension.config.ConfigProperties;
-//import io.opentelemetry.javaagent.extension.sdk.autoconfigure.spi.AutoConfigurationCustomizer;
-//import io.opentelemetry.javaagent.extension.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
+import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizer;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
+import io.opentelemetry.sdk.trace.export.SpanExporter;
 
-//import com.google.auto.service.AutoService;
-import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizer;
-import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
-
-//@AutoService(AutoConfigurationCustomizerProvider.class)
 public class CustomSpanProcessorProvider implements AutoConfigurationCustomizerProvider {
+
+
+
     @Override
     public void customize(AutoConfigurationCustomizer customizer) {
-//        if(2!=1)throw new RuntimeException("aaaaa");
+
+        SpanExporter spanExporter = OtlpHttpSpanExporter.builder()
+                .setEndpoint("http://localhost:4318") // Replace with your collector's endpoint
+                .addHeader("authorization","52a2ce46-3cad-468f-8d7d-844d73c72133")
+                .build();
+
         System.out.println("Running CustomSpanProcessorProvider...");
-        customizer.addTracerProviderCustomizer((sdkTracerProviderBuilder, configProperties) -> sdkTracerProviderBuilder.addSpanProcessor(new SlowQuerySpanProcessor())
+        customizer.addTracerProviderCustomizer((sdkTracerProviderBuilder, configProperties) ->
+                sdkTracerProviderBuilder.addSpanProcessor(new SlowQuerySpanProcessor(spanExporter))
         );
     }
 
-//    @Override
-//    public void customize(AutoConfigurationCustomizer customizer) {
-////        customizer.addSpanProcessorCustomizer((spanProcessor, configProperties) -> {
-////
-////        });
-//        customizer.addSpanProcessor(new CustomSpanProcessor());
-//    }
 }
