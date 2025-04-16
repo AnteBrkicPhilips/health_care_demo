@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id "application"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+dependencies {
+    implementation ':ojdbc8:'
+    implementation 'p6spy:p6spy:3.9.1'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+    testImplementation("com.h2database:h2:2.3.232")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
+}
+
+ext {
+    javaMainClass = "com.example.healthcare.HealthcareApp"
+}
+
+application {
+    mainClassName = javaMainClass
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
