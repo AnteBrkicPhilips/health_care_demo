@@ -34,7 +34,7 @@ dependencies {
 }
 
 
-def libDir = file("lib")
+def libDir = file("build/lib")
 
 task copyDependenciesToLib(type: Copy) {
     from configurations.testRuntimeClasspath

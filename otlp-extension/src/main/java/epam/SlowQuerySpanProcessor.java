@@ -31,13 +31,11 @@ public class SlowQuerySpanProcessor implements SpanProcessor {
 
     @Override
     public CompletableResultCode shutdown() {
-        System.out.println("!!!!!!!!!!!!!");
         return wrappedExporter.shutdown();
     }
 
     @Override
     public CompletableResultCode forceFlush() {
-        System.out.println("!!!!!!!!!!!!! flush");
         return wrappedExporter.flush();
     }
 

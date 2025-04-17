@@ -7,7 +7,7 @@
     <property name="src.dir" value="src/main/java"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="test.classes.dir" value="${build.dir}/test-classes"/>
-    <property name="lib.dir" value="${root.dir}/lib"/>
+    <property name="lib.dir" value="${root.dir}/build/lib"/>
     <property name="test.reports.dir" value="${build.dir}/test-reports"/>
     <property name="resources.dir" value="src/main/resources"/>
 
