@@ -23,14 +23,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
 }
 
-ext {
-    javaMainClass = "com.example.healthcare.HealthcareApp"
-}
-
-application {
-    mainClassName = javaMainClass
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }
