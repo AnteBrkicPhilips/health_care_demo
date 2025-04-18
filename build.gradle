@@ -27,7 +27,6 @@ dependencies {
     runtimeOnly    'io.opentelemetry.javaagent:opentelemetry-javaagent:1.32.0'
 
     runtimeOnly 'io.micrometer:micrometer-core:1.10.5'
-//    implementation 'com.github.oshi:oshi-core:6.4.5'
     testImplementation 'com.h2database:h2:2.3.232'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.hamcrest:hamcrest-core:1.3'
@@ -41,7 +40,6 @@ task copyDependenciesToLib(type: Copy) {
     into libDir
 }
 
-//ant.help()
 ant.importBuild("./build.xml"){antTargetName ->
     "ant-" + antTargetName
 }

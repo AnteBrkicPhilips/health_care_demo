@@ -7,7 +7,7 @@
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="lib.dir" value="build/lib"/>
     <property name="svclib.dir" value="lib"/>
-    <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent.jar"/>
+    <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent-1.32.0.jar"/>
     <property name="otlp.extension" value="${lib.dir}/otlp-extension.jar"/>
     <property name="main-class" value="com.example.healthcare.HealthcareSystem"/>
     <target name="copy-otlp-extension-to-lib" >
