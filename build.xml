@@ -1,81 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="healthcare" default="run" basedir=".">
+<project name="healthcare" default="run" basedir="">
     <!-- Set global properties for this build -->
-    <property name="src.dir" value="src/main/java"/>
-    <property name="resources.dir" value="src/main/resources"/>
-    <property name="test.src.dir" value="test/main/java"/>
+    <import file="common/java-build.xml"  />
+
     <property name="build.dir" value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
-    <property name="test.classes.dir" value="${build.dir}/test-classes"/>
-    <property name="lib.dir" value="lib"/>
-    <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent.jar"/>
+    <property name="lib.dir" value="build/lib"/>
+    <property name="svclib.dir" value="lib"/>
+    <property name="agent.jar" value="${lib.dir}/opentelemetry-javaagent-1.32.0.jar"/>
+    <property name="otlp.extension" value="${lib.dir}/otlp-extension.jar"/>
     <property name="main-class" value="com.example.healthcare.HealthcareSystem"/>
-    <property name="test.reports.dir" value="${build.dir}/test-reports"/>
-
-    <!-- Create the build directory structure -->
-    <target name="init">
-        <mkdir dir="${build.dir}"/>
-        <mkdir dir="${classes.dir}"/>
-        <mkdir dir="${test.classes.dir}"/>
-        <mkdir dir="${test.reports.dir}"/>
+    <target name="copy-otlp-extension-to-lib" >
+        <copy file="otlp-extension/build/libs/otlp-extension.jar" todir="${lib.dir}" />
     </target>
-
-    <!-- Copy resources to the build directory -->
-    <target name="copy-resources" depends="init">
-        <copy todir="${classes.dir}">
-            <fileset dir="${resources.dir}" includes="**/*"/>
+    <target name="copy-svclib-to-buildlib" >
+        <copy todir="${lib.dir}" >
+            <fileset dir="${svclib.dir}">
+                <include name="*.jar" />
+            </fileset>
         </copy>
     </target>
 
-    <!-- Compile the source code into classes -->
-    <target name="compile" depends="copy-resources">
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false">
-            <classpath>
-                <fileset dir="${lib.dir}">
-                    <include name="**/*.jar"/>
-                </fileset>
-            </classpath>
-        </javac>
-    </target>
-
-    <!-- Compile the test source code into test-classes -->
-    <target name="compile-tests" depends="compile">
-        <javac srcdir="${test.src.dir}" destdir="${test.classes.dir}" includeantruntime="false">
-            <classpath>
-                <path location="${classes.dir}"/>
-                <fileset dir="${lib.dir}">
-                    <include name="**/*.jar"/>
-                </fileset>
-            </classpath>
-        </javac>
-    </target>
-
-    <!-- Run the JUnit tests -->
-    <target name="test" depends="compile-tests">
-        <junit printsummary="yes">
-            <classpath>
-                <path location="${test.classes.dir}"/>
-                <path location="${classes.dir}"/>
-                <fileset dir="${lib.dir}">
-                    <include name="**/*.jar"/>
-                </fileset>
-            </classpath>
-            <formatter type="xml"/>
-            <batchtest fork="true" todir="${test.reports.dir}">
-                <fileset dir="${test.src.dir}">
-                    <include name="**/*Test.java"/>
-                </fileset>
-            </batchtest>
-        </junit>
-    </target>
 
     <!-- Run the main class -->
-    <target name="run" depends="compile">
+    <target name="run" depends="copy-svclib-to-buildlib,copy-otlp-extension-to-lib,common.compile">
         <java classname="${main-class}" fork="true">
             <jvmarg value="-javaagent:${agent.jar}"/>
+            <jvmarg value="-Dotel.javaagent.extensions=${otlp.extension}"/>
             <jvmarg value="-Dotel.service.name=your-service-name"/>
             <jvmarg value="-Dotel.traces.exporter=logging"/>
-            <jvmarg value="-Dotel.metrics.exporter=logging"/>
+
+<!--            <jvmarg value="-Dotel.metrics.exporter=otlp"/>-->
+            <jvmarg value="-Dotel.metrics.exporter=prometheus"/>
+            <!--            <jvmarg value="-Dotel.metrics.exporter=logging"/>-->
+<!--            <jvmarg value="-Dotel.logs.exporter=logging"/>-->
+                        <jvmarg value="-Dotel.traces.exporter=otlp"/>
+<!--                        <jvmarg value="-Dotel.logs.exporter=otlp"/>-->
+            <jvmarg value="-Dotel.exporter.prometheus.host=0.0.0.0"/>
+            <jvmarg value="-Dotel.exporter.prometheus.port=9464"/>
+            <jvmarg value="-Dotel.instrumentation.micrometer.enabled=true"/>
+<!--            <jvmarg value="-Dotel.metrics.exporter=console"/>-->
+
+            <jvmarg value="-Dotel.instrumentation.jdbc.capture-parameters=true"/>
+            <jvmarg value="-Dotel.instrumentation.runtime-metrics.enabled=true"/>
+
+<!--            <jvmarg value="-Dotel.instrumentation.hikari.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.jdbc.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.oracle-db.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.sql.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.jdbc-driver.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.connection-pool.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.db-connection-pool.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.db-connection-pool-metrics.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.db-connection-pool-time.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.db-connection-pool-wait-time.enabled=true"/>-->
+<!--            <jvmarg value="-Dotel.instrumentation.db-connection-pool-acquire-time.enabled=true"/>-->
+
+<!--            <jvmarg value="-Dotel.exporter.otlp.endpoint=http://localhost:4318"/> &#45;&#45;OTEL_EXPORTER_OTLP_ENDPOINT=-->
             <classpath>
                 <path location="${classes.dir}"/>
                 <fileset dir="${lib.dir}">
