@@ -2,16 +2,16 @@ package com.example.healthcare;
 
 import java.sql.Connection;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DatabaseHikariCPUtilsTest {
 
-	@AfterAll
-	static void tearDown() {
+	@After
+    public void tearDown() {
 		DatabaseHikariCPUtils.close();
 	}
 

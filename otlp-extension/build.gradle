@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.opentelemetry:opentelemetry-api:1.32.0'
+    implementation 'io.opentelemetry:opentelemetry-sdk:1.32.0'
+
+    implementation('io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.32.0')
+
+    compileOnly("io.opentelemetry:opentelemetry-exporter-otlp:1.32.0")
+
+}

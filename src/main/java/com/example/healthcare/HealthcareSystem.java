@@ -1,18 +1,30 @@
 package com.example.healthcare;
 
+import com.example.healthcare.metrics.CustomMetrics;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class HealthcareSystem {
 
     public static void main(String[] args) {
         HealthcareSystem healthcareSystem = new HealthcareSystem();
-        healthcareSystem.run();
+        CustomMetrics metricPrototype = new CustomMetrics();
+        while (true){
+            healthcareSystem.run();
+            healthcareSystem.emulateError();
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void run() {
@@ -31,6 +43,16 @@ public class HealthcareSystem {
         // Filter and display patients with the diagnosis "Flu"
         List<Patient> fluPatients = filterPatientsByDiagnosis(patients, "Flu");
         displayFilteredPatients(fluPatients);
+    }
+
+    public void emulateError() {
+        String insertSQL = "INSERT INTO dem2.patients2 (name, age, diagnosis) VALUES (1, 2, 3)";
+
+        try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void insertPatient(Patient patient) {
