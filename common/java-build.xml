@@ -3,7 +3,7 @@
     <property name="root.dir" value="${script.path}/.."/>
 
     <property name="build.dir" value="build"/>
-    <property name="test.src.dir" value="test/main/java"/>
+    <property name="test.src.dir" value="src/test/java"/>
     <property name="src.dir" value="src/main/java"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="test.classes.dir" value="${build.dir}/test-classes"/>
