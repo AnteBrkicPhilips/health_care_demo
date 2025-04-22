@@ -10,6 +10,7 @@
     <property name="lib.dir" value="${root.dir}/build/lib"/>
     <property name="test.reports.dir" value="${build.dir}/test-reports"/>
     <property name="resources.dir" value="src/main/resources"/>
+    <property name="test.resources.dir" value="src/test/resources"/>
 
     <target name="init">
         <mkdir dir="${build.dir}"/>
@@ -24,6 +25,12 @@
         </copy>
     </target>
 
+    <target name="copy-test-resources" depends="init">
+        <copy todir="${test.classes.dir}">
+            <fileset dir="${test.resources.dir}" includes="**/*"/>
+        </copy>
+    </target>
+
     <target name="compile" depends="copy-resources">
         <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false">
             <classpath>
@@ -34,7 +41,7 @@
         </javac>
     </target>
 
-    <target name="compile-tests" depends="compile">
+    <target name="compile-tests" depends="copy-test-resources,compile">
         <javac srcdir="${test.src.dir}" destdir="${test.classes.dir}" includeantruntime="false">
             <classpath>
                 <path location="${classes.dir}"/>
