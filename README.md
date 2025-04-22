@@ -4,6 +4,14 @@ cd docker
 docker compose up -d
 ```
 
+Build prototype
+```bash
+gradle clean
+gradle build
+```
+
+
+Run app
 ```bash
 ant run
 ```
