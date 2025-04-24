@@ -38,3 +38,10 @@ export OTEL_SERVICE_NAME='java-prototype'
 
 http://localhost:8080/
 http://localhost:9464/metrics
+
+# Import to Eclipse
+- Clean eclipse installation (Version: 2024-12 (4.34.0) was used)
+- Clone the repo, checkout main branch
+- In Eclipse, Import -> Gradle -> Existing Gradle Project, ensure that gradle version selected is 8.13. Proceed with import.
+- After project is imported, on Gradle Tasks tab, select "Open Gradle Run Configurations", switch to Project Settings, and again select gradle 8.13.
+- Run Default Gradle Task will execute gradle build
