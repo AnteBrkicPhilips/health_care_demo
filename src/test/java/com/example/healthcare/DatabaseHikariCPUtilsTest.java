@@ -19,8 +19,8 @@ public class DatabaseHikariCPUtilsTest {
 	public void testConnection() throws Exception {
 		try (Connection connection = DatabaseHikariCPUtils.getConnection()) {
 			assertNotNull(connection);
-			// test 2
-			assertTrue(!connection.isValid(3));
+			// test 3
+			assertTrue(connection.isValid(3));
 		}
 	}
 
