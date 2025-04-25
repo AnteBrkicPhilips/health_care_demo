@@ -2,4 +2,5 @@ build
 bin
 .gradle
 .idea1
+.idea
 otlp-extension/.project
