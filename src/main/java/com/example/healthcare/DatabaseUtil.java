@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DatabaseUtil {
 //    private static final String JDBC_URL = "jdbc:p6spy:oracle:thin:@//%s:1521/xe";
@@ -18,6 +20,9 @@ public class DatabaseUtil {
     private static final String JDBC_PASSWORD = "oracle";
     private static OracleConnectionPoolDataSource ds = OracleDS();
     private static HikariDataSource hds = hikari();
+    private static final String JDBC_PROPERTY_FILE = "jdbc.properties";
+    private static AtomicInteger activeConnections = new AtomicInteger(0);
+//    private static ConnectionErrorMetrics connectionErrorMetrics = new ConnectionErrorMetrics();
 
     private static HikariDataSource hikari() {
         HikariDataSource hikariDataSource = new HikariDataSource();
@@ -28,12 +33,38 @@ public class DatabaseUtil {
     }
 
     @WithSpan(value = "get_connection")
-    public static Connection getConnection1() throws SQLException {
-        return DriverManager.getConnection(getJdbcUrl(), JDBC_USER, JDBC_PASSWORD);
+    public static Connection getConnection(){
+        return getConnection(getJdbcUrl());
+    }
+
+    public static Connection getConnection(String url){
+        try {
+            Properties jdbcProperties = PropertiesReaderUtils.readProperties(JDBC_PROPERTY_FILE);
+            String jdbcUrl = jdbcProperties.getProperty("jdbcUrl", url);
+            Connection connection = DriverManager.getConnection(jdbcUrl, jdbcProperties);
+            activeConnections.incrementAndGet();
+            return connection;
+        }
+        catch (SQLException e) {
+//            connectionErrorMetrics.getErrorCounter().add(1);
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public static void closeConnection(Connection connection) throws SQLException {
+        if (connection != null) {
+            connection.close();
+            activeConnections.decrementAndGet();
+        }
+    }
+
+    public static int getActiveConnections() {
+        return activeConnections.get();
     }
 
     @WithSpan(value = "get_connection_pool")
-    public static Connection getConnection() throws SQLException {
+    public static Connection getConnectionByHikari() throws SQLException {
         return hds.getConnection();
     }
 
