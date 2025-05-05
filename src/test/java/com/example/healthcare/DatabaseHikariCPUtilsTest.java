@@ -2,16 +2,16 @@ package com.example.healthcare;
 
 import java.sql.Connection;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class DatabaseHikariCPUtilsTest {
 
-	@After
-    public void tearDown() {
+	@AfterAll
+    public static void tearDown() {
 		DatabaseHikariCPUtils.close();
 	}
 
@@ -19,7 +19,6 @@ public class DatabaseHikariCPUtilsTest {
 	public void testConnection() throws Exception {
 		try (Connection connection = DatabaseHikariCPUtils.getConnection()) {
 			assertNotNull(connection);
-			// test Merge
 			assertTrue(connection.isValid(3));
 		}
 	}

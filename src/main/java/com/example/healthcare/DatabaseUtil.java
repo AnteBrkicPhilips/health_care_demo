@@ -1,6 +1,7 @@
 package com.example.healthcare;
 
 import com.zaxxer.hikari.HikariDataSource;
+//import epam.ConnectionErrorMetrics;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import oracle.jdbc.datasource.impl.OracleConnectionPoolDataSource;
 
@@ -21,6 +22,7 @@ public class DatabaseUtil {
     private static OracleConnectionPoolDataSource ds = OracleDS();
     private static HikariDataSource hds = hikari();
     private static final String JDBC_PROPERTY_FILE = "jdbc.properties";
+    private static final String JDBC_URL_PROPERTY_NAME = "jdbcUrl";
     private static AtomicInteger activeConnections = new AtomicInteger(0);
 //    private static ConnectionErrorMetrics connectionErrorMetrics = new ConnectionErrorMetrics();
 
@@ -37,10 +39,10 @@ public class DatabaseUtil {
         return getConnection(getJdbcUrl());
     }
 
-    public static Connection getConnection(String url){
+    public static Connection getConnection(String url) {
         try {
             Properties jdbcProperties = PropertiesReaderUtils.readProperties(JDBC_PROPERTY_FILE);
-            String jdbcUrl = jdbcProperties.getProperty("jdbcUrl", url);
+            String jdbcUrl = jdbcProperties.getProperty(JDBC_URL_PROPERTY_NAME, url);
             Connection connection = DriverManager.getConnection(jdbcUrl, jdbcProperties);
             activeConnections.incrementAndGet();
             return connection;
@@ -69,10 +71,16 @@ public class DatabaseUtil {
     }
 
     @WithSpan(value = "get_connection_pool")
-    public static Connection getConnection2() throws SQLException {
-        ds.setURL(getJdbcUrl());
-        ds.setUser(JDBC_USER);
-        ds.setPassword(JDBC_PASSWORD);
+    public static Connection getConnectionByJdbcPool() throws SQLException {
+        return getConnectionByJdbcPool(getJdbcUrl());
+    }
+
+    @WithSpan(value = "get_connection_pool")
+    public static Connection getConnectionByJdbcPool(String url) throws SQLException {
+        Properties jdbcProperties = PropertiesReaderUtils.readProperties(JDBC_PROPERTY_FILE);
+        String jdbcUrl = jdbcProperties.getProperty(JDBC_URL_PROPERTY_NAME, url);
+        ds.setURL(jdbcUrl);
+        ds.setConnectionProperties(jdbcProperties);
         PooledConnection pc = ds.getPooledConnection();
         return pc.getConnection();
     }
