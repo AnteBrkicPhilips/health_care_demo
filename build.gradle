@@ -70,6 +70,4 @@ def integrationTest = tasks.register("integrationTest", Test) {
             includeTags 'integration'
         }
     }
-    environment 'DOCKER_HOST', 'npipe:////./pipe/podman-machine-default'
-    environment 'TESTCONTAINERS_RYUK_DISABLED', 'true'
 }
