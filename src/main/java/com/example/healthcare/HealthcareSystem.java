@@ -1,6 +1,7 @@
 package com.example.healthcare;
 
-import com.example.healthcare.metrics.CustomMetrics;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.metrics.Meter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,23 +9,53 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.example.healthcare.DatabaseUtil.closeConnection;
 
 public class HealthcareSystem {
 
     public static void main(String[] args) {
+        runActiveConnectionExample();
+    }
+
+    public static void runDBExample() {
         HealthcareSystem healthcareSystem = new HealthcareSystem();
-        CustomMetrics metricPrototype = new CustomMetrics();
-        while (true){
+        while (true) {
             healthcareSystem.run();
             healthcareSystem.emulateError();
             try {
                 TimeUnit.SECONDS.sleep(3);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public static void runActiveConnectionExample() {
+        Meter meter = GlobalOpenTelemetry.getMeter("db.connections.meter");
+        meter.gaugeBuilder("custom.db.connections.active")
+                .setDescription("Number of active database connections")
+                .setUnit("connections")
+                .buildWithCallback(measurement -> {
+                    measurement.record(DatabaseUtil.getActiveConnections());
+                });
+
+        Runnable dbTask = () ->        {
+            Connection connection = DatabaseUtil.getConnection();
+            try {
+                Thread.sleep(new Random().nextInt(20000));
+                closeConnection(connection);
+            }
+            catch (InterruptedException | SQLException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        IntStream.range(1, 5).forEach(e -> new Thread(dbTask).start());
     }
 
     public void run() {
